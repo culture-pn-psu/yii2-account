@@ -1,13 +1,13 @@
 {
-    "name": "su-pn-psu/yii2-user",
-    "description": "Yii 2 for User",
+    "name": "su-pn-psu/yii2-account",
+    "description": "Yii 2 for account",
     "type": "yii2-extension",
     "keywords": ["yii2","extension"],
     "license": "GPL-3.0",
     "minimum-stability": "stable",
     "support": {
-        "source": "https://github.com/su-pn-psu/yii2-user.git",
-        "issues": "https://github.com/su-pn-psu/yii2-user/issues"
+        "source": "https://github.com/su-pn-psu/yii2-account.git",
+        "issues": "https://github.com/su-pn-psu/yii2-account/issues"
     },
     "authors": [
         {
@@ -18,14 +18,12 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "su-pn-psu/yii2-core":"*",
-        "karpoff/yii2-crop-image-upload": "*",
-        "dmstr/yii2-adminlte-asset": "2.*",
-        "mdmsoft/yii2-admin": "~2.0"
+        "su-pn-psu/yii2-user":"*",
+        "karpoff/yii2-crop-image-upload": "*"        
     },
     "autoload": {
         "psr-4": {
-            "suPnPsu\\user\\": ""
+            "suPnPsu\\account\\": ""
         }
     },
     "extra": {
