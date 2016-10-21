@@ -5,9 +5,10 @@ use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\bootstrap\Modal;
 use karpoff\icrop\CropImageUpload;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
-/* @var $model suPnPsu\user\models\Profile */
+/* @var $model culturePnPsu\user\models\Profile */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 <?php
@@ -34,7 +35,7 @@ $this->registerCss("
     margin-left: -45px;
 }
 
-.widget-user .widget-user-image>img {
+.widget-user .widget-user-image img {
     width: 90px;
     height: auto;
     border: 3px solid #fff;
@@ -59,55 +60,39 @@ $this->registerCss("
 ?>
 
 <div class="profile-form">
-    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+
     <div class="box box-widget widget-user">
 
         <!-- Add the bg color to the header using any of the bg-* classes -->
+        <?php Pjax::begin(['id' => 'cover_pjax']) ?>
         <div class="widget-user-header bg-black" style="background-image: url('<?= $model->resultInfo->cover; ?>');">
             <div style="color: #333">
-                <?php
-                Modal::begin([
-                    'header' => '<h4 class="modal-title">Change Cover</h4>',
-                    'options' => [
-                        'class' => 'modal-change-photo',
-                    ],
-                    'toggleButton' => [
-                        'label' => '<i class="fa fa-picture-o" aria-hidden="true"></i>',
-                        'class' => 'btn btn-default btn-change-photo'
-                    ],
-                    'footer' => Html::submitButton('<i class="fa fa-check-circle-o" aria-hidden="true"></i> Update', ['class' => 'btn btn-primary']),
-                ]);
-
-                echo $form->field($model, 'cover')->widget(CropImageUpload::className());
-
-                Modal::end();
-                ?>
-
+                 <button type="button" data-toggle="modal" data-target="#modal_cover" class="btn btn-default btn-change-photo"><i class="fa fa-picture-o" aria-hidden="true"></i></button>    
             </div>
         </div>
+        <?php Pjax::end(); ?>
+        
+        
         <div class="widget-user-image">
+            <?php Pjax::begin(['id' => 'avatar_pjax']) ?>
             <img class="img-circle" src="<?= $model->resultInfo->avatar; ?>" alt="User Avatar">
+            <?php Pjax::end() ?>
+
+
+
+
             <div style="color: #333">
-                <?php
-                Modal::begin([
-                    'header' => '<h4 class="modal-title">Change Cover</h4>',
-                    'options' => [
-                        'class' => 'modal-change-photo',
-                    ],
-                    'toggleButton' => [
-                        'label' => '<i class="fa fa-picture-o" aria-hidden="true"></i>',
-                        'class' => 'btn btn-default btn-change-photo'
-                    ],
-                    'footer' => Html::submitButton('<i class="fa fa-check-circle-o" aria-hidden="true"></i> Update', ['class' => 'btn btn-primary']),
-                ]);
-
-                echo $form->field($model, 'avatar')->widget(CropImageUpload::className());
-
-                Modal::end();
-                ?>
+                <button type="button" data-toggle="modal" data-target="#modal_avatar" class="btn btn-default btn-change-photo"><i class="fa fa-picture-o" aria-hidden="true"></i></button>
             </div>
+
+
         </div>
 
+
+
+        <?php 
+        Pjax::begin(['id' => 'profile_pjax','timeout'=>3000]);
+        $form = ActiveForm::begin(['options' => ['data-pjax' => true]]); ?>
 
         <div class="box-footer">
             <div class="row" style="margin-top: 30px;">
@@ -121,16 +106,8 @@ $this->registerCss("
                             <?= $form->field($model, 'lastname')->textInput(['maxlength' => true, 'readonly' => true]) ?>
                         </div>
                     </div>
-                    
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <?= $form->field($person, 'faculty')->textInput(['maxlength' => true]) ?>
-                        </div>
-                        <div class="col-sm-6">
-                            <?= $form->field($person, 'major')->textInput(['maxlength' => true]) ?>
 
-                        </div>
-                    </div>
+
                     <div class="row">
                         <div class="col-sm-6">
                             <?= $form->field($person, 'tel')->textInput(['maxlength' => true]) ?>
@@ -139,7 +116,7 @@ $this->registerCss("
                             <?= $form->field($person, 'address')->textarea() ?>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
                     </div>
@@ -150,7 +127,95 @@ $this->registerCss("
             </div>
             <!-- /.row -->
         </div>
+        
+        <?php
+        
+        ActiveForm::end(); 
+        Pjax::end(); 
+        ?>
+
+
     </div>
-    <?php ActiveForm::end(); ?>
+
+
 
 </div>
+
+
+<?php 
+### Avatar ##
+Pjax::begin(['id' => 'update_avatar']);
+Modal::begin([
+    'id' => 'modal_avatar',
+    'header' => '<h4 class="modal-title">Change Cover</h4>',
+    'options' => [
+        'class' => 'modal-change-photo',
+    ],
+//    'toggleButton' => [
+//        'label' => '<i class="fa fa-picture-o" aria-hidden="true"></i>',
+//        'class' => 'btn btn-default btn-change-photo'
+//    ],
+     //'footer' => Html::submitButton('<i class="fa fa-check-circle-o" aria-hidden="true"></i> Update', ['class' => 'btn btn-primary']),
+]);
+
+$form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'data-pjax' => true]]);
+echo $form->field($model, 'avatar')->widget(CropImageUpload::className(), [
+    'url' => "/uploads/user/{$model->resultInfo->id}/avatars"
+]);
+echo Html::submitButton('<i class="fa fa-check-circle-o" aria-hidden="true"></i> Update', ['class' => 'btn btn-primary update_modal_avatar']);
+
+ActiveForm::end();
+Modal::end();
+Pjax::end(); 
+?>
+<?php 
+### Cover ##
+Pjax::begin(['id' => 'update_cover']);
+Modal::begin([
+    'id' => 'modal_cover',
+    'header' => '<h4 class="modal-title">Change Cover</h4>',
+    'options' => [
+        'class' => 'modal-change-photo',
+    ],
+//    'toggleButton' => [
+//        'label' => '<i class="fa fa-picture-o" aria-hidden="true"></i>',
+//        'class' => 'btn btn-default btn-change-photo'
+//    ],
+     //'footer' => Html::submitButton('<i class="fa fa-check-circle-o" aria-hidden="true"></i> Update', ['class' => 'btn btn-primary']),
+]);
+
+$form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'data-pjax' => true]]);
+echo $form->field($model, 'cover')->widget(CropImageUpload::className(), [
+    'url' => "/uploads/user/{$model->resultInfo->id}/covers"
+]);
+echo Html::submitButton('<i class="fa fa-check-circle-o" aria-hidden="true"></i> Update', ['class' => 'btn btn-primary update_modal_cover']);
+
+ActiveForm::end();
+Modal::end();
+Pjax::end(); 
+?>
+
+<?php
+$this->registerJs(
+'$("document").ready(function(){ 
+    
+    $("#update_avatar").on("pjax:end", function() {
+        $.pjax.reload({container:"#avatar_pjax"});  //Reload GridView
+        $("#modal_avatar").modal("hide");
+        $("body").removeClass("modal-open");
+        $(".modal-backdrop").remove();
+    });
+    
+    $("#update_cover").on("pjax:end", function() {
+        $.pjax.reload({container:"#cover_pjax"});  //Reload GridView
+        $("#modal_cover").modal("hide");
+        $("body").removeClass("modal-open");
+        $(".modal-backdrop").remove();
+    });
+        
+
+
+});'
+        , yii\web\View::POS_END);
+?>
+

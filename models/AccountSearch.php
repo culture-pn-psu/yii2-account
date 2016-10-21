@@ -1,14 +1,14 @@
 <?php
 
-namespace suPnPsu\account\models;
+namespace culturePnPsu\account\models;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use suPnPsu\user\models\User;
+use culturePnPsu\user\models\User;
 
 /**
- * AccountSearch represents the model behind the search form about `suPnPsu\user\models\User`.
+ * AccountSearch represents the model behind the search form about `culturePnPsu\user\models\User`.
  */
 class AccountSearch extends User
 {

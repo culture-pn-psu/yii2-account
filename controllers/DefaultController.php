@@ -1,14 +1,14 @@
 <?php
 
-namespace suPnPsu\account\controllers;
+namespace culturePnPsu\account\controllers;
 
 use Yii;
-use suPnPsu\user\models\User;
-use suPnPsu\account\models\AccountSearch;
+use culturePnPsu\user\models\User;
+use culturePnPsu\account\models\AccountSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use suPnPsu\user\models\Person;
+use culturePnPsu\user\models\Person;
 
 /**
  * DefaultController implements the CRUD actions for User model.
@@ -16,103 +16,37 @@ use suPnPsu\user\models\Person;
 class DefaultController extends Controller {
 
     /**
-     * @inheritdoc
-     */
-    public function behaviors() {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
-
-    /**
      * Lists all User models.
      * @return mixed
      */
     public function actionIndex() {
+//        phpinfo();
+//        exit();
+        //Yii::$app->request->enableCsrfValidation = false;
         $model = Yii::$app->user->identity->profile;
         $model->scenario = 'update';
 
         $person = $model->person ? $model->person : new Person();
 
-
-        if ($model->load(Yii::$app->request->post()) && $person->load(Yii::$app->request->post())) {
+        if ($model->load(Yii::$app->request->post())) {
+            $person->load(Yii::$app->request->post());
             $person->user_id = $model->user_id;
-            if ($model->save() && $person->save()) {
+            if ($model->save()) {
+                $person->save();
                 Yii::$app->session->setFlash('success', 'บันทึกเรียบร้อย');
             } else {
+                print_r($model->getErrors());
                 print_r($person->getErrors());
                 exit();
             }
-            return $this->redirect(['index']);
+            //if(!Yii::$app->request->isAjax)
+            //return $this->redirect(['index']);
         }
         return $this->render('index', [
                     'model' => $model,
                     'person' => $person,
         ]);
     }
-
-    /**
-     * Displays a single User model.
-     * @param integer $id
-     * @return mixed
-     */
-//    public function actionView($id) {
-//        return $this->render('view', [
-//                    'model' => $this->findModel($id),
-//        ]);
-//    }
-
-    /**
-     * Creates a new User model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-//    public function actionCreate() {
-//        $model = new User();
-//
-//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            return $this->redirect(['view', 'id' => $model->id]);
-//        } else {
-//            return $this->render('create', [
-//                        'model' => $model,
-//            ]);
-//        }
-//    }
-
-    /**
-     * Updates an existing User model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
-//    public function actionUpdate($id) {
-//        $model = $this->findModel($id);
-//
-//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            return $this->redirect(['view', 'id' => $model->id]);
-//        } else {
-//            return $this->render('update', [
-//                        'model' => $model,
-//            ]);
-//        }
-//    }
-
-    /**
-     * Deletes an existing User model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-//    public function actionDelete($id) {
-//        $this->findModel($id)->delete();
-//
-//        return $this->redirect(['index']);
-//    }
 
     /**
      * Finds the User model based on its primary key value.
@@ -126,6 +60,24 @@ class DefaultController extends Controller {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+    
+    public function actionAvatar() {
+        $model = Yii::$app->user->identity->profile;
+        $model->scenario = 'update';
+        //$model->saveby = Yii::$app->user->id;
+        if ($model->load(Yii::$app->request->post())) {
+            //print_r(Yii::$app->request->post());
+            if ($model->save(false)) {
+                echo 1;
+            } else {
+                echo 0;
+            }            
+        } else {
+            return $this->renderAjax('avatar', [
+                        'model' => $model,
+            ]);
         }
     }
 

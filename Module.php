@@ -1,6 +1,6 @@
 <?php
 
-namespace suPnPsu\account;
+namespace culturePnPsu\account;
 
 /**
  * account module definition class
@@ -10,7 +10,7 @@ class Module extends \yii\base\Module
     /**
      * @inheritdoc
      */
-    public $controllerNamespace = 'suPnPsu\account\controllers';
+    public $controllerNamespace = 'culturePnPsu\account\controllers';
 
     /**
      * @inheritdoc
