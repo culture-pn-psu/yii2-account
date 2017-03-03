@@ -25,11 +25,5 @@
         "psr-4": {
             "culturePnPsu\\account\\": ""
         }
-    },
-    "extra": {
-        "asset-installer-paths": {
-            "npm-asset-library": "vendor/npm",
-            "bower-asset-library": "vendor/bower"
-        }
     }
 }
